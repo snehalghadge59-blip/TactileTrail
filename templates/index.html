@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>TactileTrail — Zero-Screen Audio Naturalist</title>
+  <meta name="description" content="Put your phone in your pocket, put earbuds on, and explore outdoor tactile quests powered by Google Gemma and ElevenLabs. Built for the Hacktoberfest Touch Grass Challenge.">
+  <meta name="theme-color" content="#0B130E">
+
+  <!-- Google Fonts for Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="theme-forest">
+  <div id="app" class="app-container">
+
+    <!-- Top Floating Status Bar -->
+    <header class="top-bar">
+      <div class="brand">
+        <span class="brand-icon">🌿</span>
+        <div class="brand-text">
+          <h1 class="brand-title">TactileTrail</h1>
+          <span class="brand-tagline">Zero-Screen Audio Naturalist</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Sun/Glare High Contrast Mode Toggle -->
+        <button id="contrast-toggle-btn" class="icon-btn" title="Toggle Outdoor Sunlight Contrast Mode" aria-label="Toggle High Contrast Mode">
+          <span id="contrast-icon">☀️</span>
+        </button>
+        <!-- Info Modal Trigger -->
+        <button id="info-modal-btn" class="icon-btn" title="About TactileTrail & Architecture" aria-label="About TactileTrail">
+          <span>ℹ️</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Content Container -->
+    <main class="main-content">
+
+      <!-- ======================================================== -->
+      <!-- VIEW 1: PRE-WALK SETUP SCREEN                            -->
+      <!-- ======================================================== -->
+      <section id="view-setup" class="view-panel active">
+        <!-- Hero Introduction -->
+        <div class="hero-card">
+          <div class="hero-badge">
+            <span class="pulse-dot"></span>
+            <span>DEV Hacktoberfest • "Touch Grass"</span>
+          </div>
+          <h2 class="hero-headline">Put your phone in your pocket. <em>Step into the wild.</em></h2>
+          <p class="hero-subtext">
+            No screen staring. Connect your earbuds, tap begin, and let David Attenborough-style audio quests guide your fingers and ears to nature’s hidden wonders.
+          </p>
+        </div>
+
+        <!-- Offline / Edge-AI Simulation Switcher Banner -->
+        <div class="edge-banner">
+          <div class="edge-info">
+            <div class="edge-title-row">
+              <span class="edge-icon" id="edge-mode-icon">⚡</span>
+              <strong id="edge-mode-label">Gemma Edge (Offline Mode)</strong>
+            </div>
+            <p id="edge-mode-desc" class="edge-desc">
+              Running on-device edge weights. Zero cell reception required on deep wilderness trails.
+            </p>
+          </div>
+          <label class="switch" title="Toggle between Cloud Gemma and Edge-AI Offline Simulation">
+            <input type="checkbox" id="offline-mode-toggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <!-- Step 1: Environment Selection -->
+        <div class="section-block">
+          <label class="section-label">1. Choose Your Biome</label>
+          <div class="environment-grid" id="env-selector">
+            <button class="env-card active" data-env="forest" id="env-forest">
+              <span class="env-emoji">🌲</span>
+              <div class="env-details">
+                <span class="env-name">Forest Trail</span>
+                <span class="env-desc">Canopy acoustics, loamy soil, furrowed tree bark</span>
+              </div>
+            </button>
+
+            <button class="env-card" data-env="park" id="env-park">
+              <span class="env-emoji">🌿</span>
+              <div class="env-details">
+                <span class="env-name">Park & Botanical</span>
+                <span class="env-desc">Turf root resilience, urban birdsong, petal textures</span>
+              </div>
+            </button>
+
+            <button class="env-card" data-env="neighborhood" id="env-neighborhood">
+              <span class="env-emoji">🏘️</span>
+              <div class="env-details">
+                <span class="env-name">Neighborhood Stroll</span>
+                <span class="env-desc">Sidewalk moss, garden hedges, brick lichen colonies</span>
+              </div>
+            </button>
+
+            <button class="env-card" data-env="water" id="env-water">
+              <span class="env-emoji">🌊</span>
+              <div class="env-details">
+                <span class="env-name">Lake & River Shore</span>
+                <span class="env-desc">Polished fluvial pebbles, ripple resonance, reeds</span>
+              </div>
+            </button>
+
+            <button class="env-card" data-env="meadow" id="env-meadow">
+              <span class="env-emoji">🌾</span>
+              <div class="env-details">
+                <span class="env-name">Meadow & Grassland</span>
+                <span class="env-desc">Dry seed pods, wind sweep acoustics, insect corridors</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Quest Length & Cadence -->
+        <div class="section-block">
+          <label class="section-label">2. Sensory Depth</label>
+          <div class="segmented-control" id="length-selector">
+            <button class="seg-btn" data-length="short" id="len-short">
+              <span>Quick Escape</span>
+              <small>3 Checkpoints (~5 min)</small>
+            </button>
+            <button class="seg-btn active" data-length="standard" id="len-standard">
+              <span>Deep Naturalist</span>
+              <small>4 Checkpoints (~10 min)</small>
+            </button>
+          </div>
+        </div>
+
+        <!-- Audio & Ambient Settings Preview -->
+        <div class="audio-preference-card">
+          <div class="pref-row">
+            <div class="pref-text">
+              <span class="pref-icon">🍃</span>
+              <div>
+                <strong>Procedural Nature Soundscape</strong>
+                <small class="text-muted">Synthesized wind & birdsong ambient background</small>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="ambient-audio-toggle" checked>
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="pref-row" id="voice-row">
+            <div class="pref-text">
+              <span class="pref-icon">🎙️</span>
+              <div>
+                <strong>Narrator Cadence</strong>
+                <small class="text-muted" id="voice-engine-desc">ElevenLabs Attenborough (with gTTS fallback)</small>
+              </div>
+            </div>
+            <select id="voice-select" class="custom-select">
+              <option value="JBFqnCBsd6RMkjVDRZzb" selected>George (Warm Naturalist)</option>
+              <option value="pNInz6obpgDQGcFmaJgB">Adam (Deep Grounding)</option>
+              <option value="21m00Tcm4TlvDq8ikWAM">Rachel (Calm Guide)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Giant Outdoor Action Button -->
+        <div class="action-dock">
+          <button id="start-walk-btn" class="btn-giant btn-primary">
+            <span class="btn-icon">🥾</span>
+            <span class="btn-text">
+              <strong>Begin Sensory Walk</strong>
+              <small>Earbuds on • Keep phone in pocket</small>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- VIEW 2: ACTIVE SENSORY WALK SCREEN                       -->
+      <!-- ======================================================== -->
+      <section id="view-active-walk" class="view-panel">
+        
+        <!-- Top Active Walk HUD -->
+        <div class="walk-hud">
+          <div class="hud-left">
+            <span id="active-env-badge" class="hud-badge">🌲 Forest Trail</span>
+            <span id="active-ai-badge" class="hud-badge badge-edge">⚡ Gemma Edge</span>
+          </div>
+          <div class="hud-right">
+            <button id="pocket-mode-btn" class="pocket-btn" title="Lock screen for pocket protection" aria-label="Pocket Mode Lock">
+              <span>🔒 Pocket Mode</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Checkpoint Stepper Visualizer -->
+        <div class="stepper-bar" id="stepper-dots">
+          <!-- Dynamically populated step dots -->
+        </div>
+
+        <!-- Main Checkpoint Sensory Card -->
+        <div class="sensory-card" id="current-checkpoint-card">
+          <div class="checkpoint-header">
+            <div class="sense-badge" id="checkpoint-sense-badge">
+              <span id="sense-emoji">🖐️</span>
+              <span id="sense-label">Touch Checkpoint</span>
+            </div>
+            <span class="step-indicator" id="step-number-text">1 of 4</span>
+          </div>
+
+          <h3 class="checkpoint-title" id="checkpoint-title">The Cartography of Bark</h3>
+
+          <!-- The Physical Action Invitation -->
+          <div class="invitation-callout">
+            <span class="invitation-icon">🎯</span>
+            <p id="checkpoint-invitation" class="invitation-text">
+              Reach out with your fingertips and press gently into the nearest mature tree.
+            </p>
+          </div>
+
+          <!-- Spoken Narration Transcript (Collapsible/Visible) -->
+          <div class="narration-container">
+            <blockquote id="checkpoint-narration" class="narration-text">
+              "Close your eyes and let your fingers trace the furrowed bark before you..."
+            </blockquote>
+            <p id="scientific-note-text" class="scientific-pill">
+              🔬 <em>Rhytidome cork formation & microclimatic moisture retention.</em>
+            </p>
+          </div>
+
+          <!-- Pulsing Audio Waveform Visualizer -->
+          <div class="audio-waveform-visualizer" id="audio-visualizer">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+          </div>
+
+          <!-- Audio Progress Bar & Time -->
+          <div class="audio-scrubber-container">
+            <div class="time-readout">
+              <span id="current-time">0:00</span>
+              <span id="time-divider">/</span>
+              <span id="total-time">0:55</span>
+            </div>
+            <div class="scrubber-track" id="scrubber-track">
+              <div class="scrubber-fill" id="scrubber-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Large Tactile Outdoor Controls -->
+        <div class="tactile-control-pad">
+          <button id="prev-step-btn" class="btn-tactile btn-secondary" title="Previous Checkpoint" aria-label="Previous Checkpoint">
+            <span>⏮️</span>
+          </button>
+          
+          <button id="play-pause-btn" class="btn-tactile btn-giant-circle" title="Play or Pause Narration" aria-label="Play or Pause">
+            <span id="play-pause-icon">▶️</span>
+          </button>
+
+          <button id="next-step-btn" class="btn-tactile btn-primary-step" title="Next Checkpoint" aria-label="Next Checkpoint">
+            <span id="next-step-icon">⏭️ Next Sense</span>
+          </button>
+        </div>
+
+        <!-- Ambient Soundscape Quick Volume & Haptic Feedback Indicator -->
+        <div class="ambient-control-strip">
+          <button id="ambient-mute-btn" class="ambient-chip active" title="Toggle Procedural Ambient Nature Audio">
+            <span>🍃 Nature Soundscape</span>
+          </button>
+          <button id="vibrate-test-btn" class="ambient-chip" title="Tactile Haptic Vibration Cue">
+            <span>📳 Haptic Pulse</span>
+          </button>
+        </div>
+
+        <!-- End Walk Early Button -->
+        <div class="quit-walk-container">
+          <button id="end-walk-early-btn" class="btn-text-subtle">
+            End Walk & Save Reflection
+          </button>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- VIEW 3: POST-WALK REFLECTION & NATURE JOURNAL            -->
+      <!-- ======================================================== -->
+      <section id="view-reflection" class="view-panel">
+        <div class="reflection-card">
+          <div class="reflection-header">
+            <span class="celebrate-emoji">🌱</span>
+            <h2>Sensory Walk Complete</h2>
+            <p class="reflection-subhead">
+              You stepped away from the screen and touched the living earth. Here is your nature journal record.
+            </p>
+          </div>
+
+          <!-- Stat Badges -->
+          <div class="stat-grid">
+            <div class="stat-box">
+              <span class="stat-number" id="stat-senses">4</span>
+              <span class="stat-label">Senses Awakened</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number" id="stat-minutes">8m</span>
+              <span class="stat-label">Outdoor Mindful Time</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number" id="stat-ai-model">Gemma</span>
+              <span class="stat-label">Naturalist Intelligence</span>
+            </div>
+          </div>
+
+          <!-- Sensory Checkpoint Recap -->
+          <div class="recap-section">
+            <h4 class="recap-heading">Sensory Trail Journey</h4>
+            <div id="recap-list" class="recap-items">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Field Photo Note Attachment -->
+          <div class="photo-attachment-card">
+            <h4>Captured Nature Artifact</h4>
+            <p class="text-muted">Take a photo of the tree bark, leaf veins, or stone you connected with.</p>
+            
+            <div class="photo-upload-zone" id="photo-upload-zone">
+              <input type="file" id="photo-input" accept="image/*" capture="environment" class="file-input-hidden">
+              <div id="photo-placeholder" class="upload-prompt">
+                <span class="camera-icon">📷</span>
+                <span>Tap to photograph your specimen</span>
+                <small>Uses mobile camera</small>
+              </div>
+              <div id="photo-preview-container" class="preview-container hidden">
+                <img id="photo-preview-img" src="" alt="Nature specimen photo" class="preview-img">
+                <button id="remove-photo-btn" class="remove-photo-tag" title="Remove photo">&times;</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Naturalist Reflection Note Input -->
+          <div class="notes-section">
+            <label for="reflection-text" class="section-label">Field Notes & Personal Sensation</label>
+            <textarea id="reflection-text" class="custom-textarea" rows="3" placeholder="What texture or sound surprised you most today? E.g., The cedar bark felt warmer than expected on its sunny side..."></textarea>
+          </div>
+
+          <!-- Naturalist Quote of the Day -->
+          <div class="quote-card">
+            <blockquote id="nature-quote-text">
+              "In every walk with nature, one receives far more than he seeks."
+            </blockquote>
+            <span class="quote-author">— John Muir</span>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="reflection-actions">
+            <button id="save-journal-btn" class="btn-giant btn-primary">
+              <span>💾</span>
+              <span>Save to Field Notebook</span>
+            </button>
+            <button id="share-walk-btn" class="btn-giant btn-secondary">
+              <span>📋</span>
+              <span>Copy Walk Summary</span>
+            </button>
+            <button id="new-walk-btn" class="btn-giant btn-outline">
+              <span>🥾</span>
+              <span>Begin Another Walk</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ======================================================== -->
+    <!-- POCKET MODE OVERLAY (Touch Protection & Lock Simulation) -->
+    <!-- ======================================================== -->
+    <div id="pocket-overlay" class="pocket-overlay hidden">
+      <div class="pocket-screen-center">
+        <span class="pocket-pulse-icon">🌿</span>
+        <h3 class="pocket-title">Pocket Protection Active</h3>
+        <p class="pocket-subtitle">
+          Phone is safe from accidental screen touches.<br>
+          Earbuds are narrating your sensory walk.
+        </p>
+        <div class="pocket-mini-status">
+          <span id="pocket-step-name">Checkpoint 1: The Cartography of Bark</span>
+        </div>
+        <button id="exit-pocket-mode-btn" class="btn-unlock-pocket">
+          <span>Tap 2x or Click to Unlock Screen</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- INFO & ARCHITECTURE MODAL                                -->
+    <!-- ======================================================== -->
+    <div id="info-modal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>🌿 About TactileTrail</h3>
+          <button id="close-modal-btn" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <h4>Philosophy: Touch Grass, Drop the Screen</h4>
+          <p>
+            Most nature apps force you to look at a glowing rectangle outdoors—identifying plants through camera viewfinders.
+            <strong>TactileTrail flips the paradigm</strong>: put your phone in your pocket, put earbuds on, and let an intimate, David Attenborough-inspired naturalist speak directly into your ears.
+          </p>
+
+          <h4>Architecture & Integrations</h4>
+          <ul>
+            <li><strong>Core AI Model:</strong> Google Gemma (via Google AI Studio & Hugging Face). Prompt-engineered with intimate botanical and bioacoustic knowledge.</li>
+            <li><strong>Edge-AI Resilience:</strong> Built-in on-device Gemma simulation allowing full functionality without cell signal on remote mountain trails.</li>
+            <li><strong>Audio Engine:</strong> ElevenLabs Text-to-Speech API streaming realistic, calming voice guidance, with graceful fallback to browser speech synthesis.</li>
+            <li><strong>Sensory Soundscape:</strong> Web Audio API procedural synthesis of wind currents and birdsong.</li>
+            <li><strong>Earbuds & Lockscreen:</strong> HTML5 MediaSession API allowing pocket playback controls via headphone buttons.</li>
+          </ul>
+
+          <div class="built-for-badge">
+            🏆 Created for the Hacktoberfest DEV Challenge 2026
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden HTML5 Audio Element for Narration Streaming -->
+    <audio id="narration-audio" preload="auto"></audio>
+
+  </div>
+
+  <!-- Main JavaScript App -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
